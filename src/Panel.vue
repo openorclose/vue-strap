@@ -42,25 +42,10 @@
                     </slot>
                 </div>
             </div>
-            <template v-if="preloadBool">
+            <template v-if="preloadBool || isCached">
                 <div class="card-collapse"
                      ref="panel"
                      v-show="localExpanded"
-                >
-                    <div class="card-body">
-                        <slot></slot>
-                        <retriever v-if="hasSrc" ref="retriever" :src="src" :fragment="fragment" delay></retriever>
-                        <panel-switch v-show="isExpandableCard && bottomSwitchBool" :is-open="localExpanded"
-                                      @click.native.stop.prevent="collapseThenScrollIntoViewIfNeeded()"
-                                      @is-open-event="retrieveOnOpen"></panel-switch>
-                    </div>
-                    <hr v-show="isSeamless" />
-                </div>
-            </template>
-            <template v-else>
-                <div class="card-collapse"
-                     ref="panel"
-                     v-if="localExpanded"
                 >
                     <div class="card-body">
                         <slot></slot>
@@ -229,7 +214,8 @@
       return {
         onHeaderHover: false,
         localExpanded: false,
-        localMinimized: false
+        localMinimized: false,
+        isCached: false
       }
     },
     methods: {
@@ -270,6 +256,15 @@
     },
     watch: {
       'localExpanded': function (val, oldVal) {
+        if (this.isCached) {
+        	return;
+        }
+        /* When either one of the values is true,
+         * it means that the data is/will be cached.
+         */
+        if (val || oldVal) {
+          this.isCached = true;
+        }
         this.$nextTick(function () {
           this.retrieveOnOpen(this, val);
         })
