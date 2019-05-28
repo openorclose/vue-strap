@@ -6,7 +6,7 @@
       'fade':effect === 'fade',
       'zoom':effect === 'zoom'
     }, addClass]">
-    <div v-bind:class="{'modal-dialog':true,'modal-lg':largeBool,'modal-sm':smallBool}" role="document"
+    <div v-bind:class="{'modal-dialog':true,'modal-lg':largeBool,'modal-sm':smallBool,'modal-dialog-centered':centerBool}" role="document"
       v-bind:style="{width: optionalWidth}">
       <div class="modal-content">
         <slot name="modal-header">
@@ -66,6 +66,10 @@ export default {
       type: Boolean,
       default: false
     },
+    center: {
+      type: Boolean,
+      default: false
+    },
     name: {
       type: String
     },
@@ -91,6 +95,9 @@ export default {
     },
     smallBool () {
       return toBoolean(this.small)
+    },
+    centerBool () {
+      return toBoolean(this.center)
     },
     titleRendered () {
       return md.renderInline(this.title);
