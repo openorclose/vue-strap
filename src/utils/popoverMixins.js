@@ -34,6 +34,10 @@ export default {
     },
     id: {
       type: String
+    },
+    hoverable: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -53,6 +57,9 @@ export default {
     },
     titleRendered () {
       return md.renderInline(this.title)
+    },
+    hoverableBool() {
+      return toBoolean(this.hoverable)
     }
   },
   methods: {
@@ -131,6 +138,9 @@ export default {
         }
         // temporary fix for popover going off screen - end
 
+        if (this.hoverableBool) {
+          $(this.$refs.popover).on('mouseleave mouseenter', this.toggle)
+        }
       }, 20)
     },
     calculateOffset (trigger, popover) {
