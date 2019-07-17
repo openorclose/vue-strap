@@ -34,10 +34,6 @@ export default {
     },
     id: {
       type: String
-    },
-    hoverable: {
-      type: Boolean,
-      default: false
     }
   },
   data () {
@@ -57,9 +53,6 @@ export default {
     },
     titleRendered () {
       return md.renderInline(this.title)
-    },
-    hoverableBool() {
-      return toBoolean(this.hoverable)
     }
   },
   methods: {
@@ -138,9 +131,8 @@ export default {
         }
         // temporary fix for popover going off screen - end
 
-        if (this.hoverableBool) {
-          $(this.$refs.popover).on('mouseleave mouseenter', this.toggle)
-        }
+        // If triggered by mouseenter, we make the popover a trigger for itself
+        jQuery(popover).on('mouseenter mouseleave', this.toggle)
       }, 20)
     },
     calculateOffset (trigger, popover) {
