@@ -42,10 +42,11 @@
                     </slot>
                 </div>
             </div>
-            <template v-if="preloadBool || isCached">
+            <template v-if="preloadBool || isCached || peekBool">
                 <div class="card-collapse"
                      ref="panel"
-                     v-show="localExpanded"
+                     v-show="localExpanded || peekBool"
+                     :class="{ peek: !localExpanded && peekBool }"
                 >
                     <div class="card-body">
                         <slot></slot>
@@ -57,6 +58,15 @@
                     <hr v-show="isSeamless" />
                 </div>
             </template>
+            <div v-if="peekBool && !localExpanded"
+                 class="peek-overlay"
+                 @click.prevent.stop="open()">
+                <panel-switch :is-open="localExpanded"
+                              @click.native.stop.prevent="toggle()"
+                              style = "position:relative;bottom:0;left:50%"
+                              class = "btn-light"
+                ></panel-switch>
+            </div>
         </div>
     </span>
 </template>
@@ -126,6 +136,10 @@
         type: Boolean,
         default: false
       },
+      peek: {
+        type: Boolean,
+        default: false
+      },
       addClass: {
         type: String,
         default: ''
@@ -156,6 +170,9 @@
       },
       preloadBool () {
         return toBoolean(this.preload);
+      },
+      peekBool() {
+        return toBoolean(this.peek);
       },
       // Vue 2.0 coerce migration end
       isExpandableCard () {
@@ -391,6 +408,20 @@
 
     .morph-display-wrapper {
         white-space: normal;
+    }
+
+    .peek {
+        height: 100px;
+        overflow: hidden;
+    }
+
+    .peek-overlay {
+        position:absolute;
+        bottom:0;
+        height:100px;
+        width:100%;
+        background:-webkit-linear-gradient(rgba( 255, 255, 255, 0), rgba(255, 255, 255, 1) );
+        background:linear-gradient( rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) );
     }
 
     /* Bootstrap extra small(xs) responsive breakpoint */
